@@ -78,3 +78,71 @@ FROM
 	TB_GRADE
 WHERE
 	STUDENT_NO = 'A517178';
+
+
+-- 8번
+-- 학과별 학생 수를 구하여 "학과번호", "학생수(명)"의 형태로 조회하시오.
+SELECT
+	DEPARTMENT_NO,
+	COUNT(*)
+FROM
+	TB_DEPARTMENT
+LEFT JOIN TB_STUDENT USING (DEPARTMENT_NO)
+GROUP BY DEPARTMENT_NO;
+
+-- 9번
+-- 지도 교수를 배정받지 못한 학생의 수를 조회하시오
+SELECT COUNT(*)
+FROM TB_STUDENT
+WHERE COACH_PROFESSOR_NO IS NULL;
+
+
+-- 10번
+-- 학번이 A112113인 김고운 학생의 년도 별 평점을 구하는 SQL문을 작성하시오.
+-- 단, 이때 출력화면의 헤더는 "년도", "년도 별 평점"이라고 찍히게 하고,
+-- 점수는 반올림하여 소수점 이하 한자리까지만 표시한다.
+SELECT
+	EXTRACT(YEAR FROM TERN_NO) "년도",
+	
+FROM TB_STUDENT
+JOIN TB_GRADE USING(STUDENT_NO)
+GROUP BY 년도
+WHERE STUDENT_NO = 'A112113'
+AND   STUDENT_NAME = '김고운';
+
+
+-- 11번
+-- 학과 별 휴학생 수를 파악하고자 한다.
+-- 학과 번호와 휴학생 수를 조회하는 SQL을 작성하시오.
+SELECT
+	DEPARTMENT_NO 학과코드명,
+	COUNT(STUDENT_NAME) 휴학생 수
+FROM TB_STUDENT
+GROUP BY DEPARTMENT_NO
+HAVING ABSENCE_YN = 'Y';
+
+
+-- 12번
+-- 춘 대학교에 다니는 동명이인인 학생들의 이름, 동명인 수를 조회하시오.
+SELECT
+	DISTINCT(STUDENT_NAME) "동일이름",
+	COUNT(*)
+FROM TB_STUDENT
+GROUP BY STUDENT_NAME
+WHERE COUNT(*) > 1
+ORDER BY STUDENT_NAME;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
