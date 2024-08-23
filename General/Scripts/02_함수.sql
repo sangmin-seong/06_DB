@@ -18,7 +18,6 @@
 SELECT 'HELLO WORLD', LENGTH('HELLO WORLD') 
 FROM DUAL; -- DUMMY TABLE(가상/가짜 테이블)
 
-
 -- EMPLOYEE 테이블에서
 -- 사원명, 이메일, 이메일 길이 조회
 -- 단, 이메일 길이가 12 이하인 행만 
@@ -30,8 +29,7 @@ ORDER BY LENGTH(EMAIL) ASC;
 
 ----------------------------------------------------------
 
--- INSTR(문자열 | 컬럼명, '찾을 문자열' [, 찾을 시작 위치 [, 순번]])
-   /*JAVA에서 indexof 와 비슷*/ 
+-- INSTR(문자열 | 컬럼명, '찾을 문자열' [, 찾을 시작 위치 [, 순번]]) 
 
 -- 찾을 시작 위치부터 지정된 순번째 찾은 문자열의 시작 위치를 반환
 
@@ -44,12 +42,13 @@ SELECT 'AABAACAABBAA',
 			 INSTR('AABAACAABBAA', 'B', 5)
 FROM DUAL; -- 9
 
+
 -- 문자열에서 5번 부터 검색 시작해서 두번째로 찾은 'B'의 위치 조회
 SELECT 'AABAACAABBAA', 
 			 INSTR('AABAACAABBAA', 'B', 5, 2)
 FROM DUAL; -- 10
 
------------------------------------------------------------------------------
+-----------------------------------------------------------
 
 -- SUBSTR(문자열 | 컬럼명, 시작위치 [,길이])
 
@@ -60,77 +59,67 @@ FROM DUAL; -- 10
 SELECT SUBSTR('ABCDEFG', 2, 3)
 FROM DUAL; -- BCD
 
--- 시작 위치 
+-- 시작위치만 지정
 SELECT SUBSTR('ABCDEFG', 4)
 FROM DUAL; -- DEFG
-
 
 
 -- SUBSTR() + INSTR() 같이 사용하기
 
 -- EMPLOYEE 테이블에서 
--- 사원명, 이메일 아이디 (@ 앞에까지 문자열)을
+-- 사원명, 이메일 아이디 (@ 앞에까지 문자열)를
 -- 이메일 아이디 오름차순으로 조회
-
-SELECT
+SELECT 
 	EMP_NAME,
-	SUBSTR(EMAIL, 1, INSTR(EMAIL, '@')-1) "이메일 아이디"
+	SUBSTR(EMAIL, 1, INSTR(EMAIL, '@') - 1) "이메일 아이디"
 FROM EMPLOYEE
 ORDER BY "이메일 아이디" ASC;
 
-
----------------------------------------------------------------------------
+---------------------------------------------------------
 
 -- TRIM([ [옵션] 문자열 | 컬럼명 FROM ] 문자열 | 컬럼명)
 -- 주어진 문자열의 앞쪽|뒤쪽|양쪽에 존재하는 지정된 문자열을 제거
 
 -- 옵션 : LEADING(앞쪽), TRAILING(뒤쪽), BOTH(양쪽, 기본값)
 
-
-SELECT '   기  준   '
+-- 문자열 앞/뒤/양쪽 공백 제거
+SELECT '   기  준   ',
+	TRIM(LEADING  ' ' FROM '   기  준   '),
+	TRIM(TRAILING ' ' FROM '   기  준   '),
+	TRIM(BOTH     ' ' FROM '   기  준   ')
 FROM DUAL;
 
--- 앞쪽 공백 제거
-SELECT TRIM(LEADING ' ' FROM '   기   준   ')
+-- 문자열 앞/뒤/양쪽 특정 문자 제거
+SELECT '##@기  준@##',
+	TRIM(LEADING  '#' FROM '##@기  준@##'),
+	TRIM(TRAILING '#' FROM '##@기  준@##'),
+	TRIM(BOTH     '#' FROM '##@기  준@##')
 FROM DUAL;
 
--- 뒤쪽 공백 제거
-SELECT TRIM(TRAILING ' ' FROM '   기   준   ')
-FROM DUAL;
+---------------------------------------------------
 
--- 양쪽 공백 제거
-SELECT TRIM(BOTH ' ' FROM '   기   준   ')
-FROM DUAL;
-
--- 앞,위, 양쪽 특정문자 제거
-SELECT '##@기  준@##', 
-	TRIM(LEADING '#' FROM '##@기   준@##'),
-	TRIM(TRAILING '#' FROM '##@기   준@##'),
-	TRIM(BOTH '#' FROM '##@기   준@##')
-FROM DUAL;
-
---------------------------------------------------------------------
 -- REPLACE(문자열 | 컬럼명, 찾을 문자열, 바꿀 문자열)
 
-SELECT
-	NATIONAL_NAME,
-	REPLACE (NATIONAL_NAME, '한국', '대한민국')
-FROM "NATIONAL"; -- "테이블명" == 이름이 "테이블명"과 같은 테이블
+SELECT 
+	NATIONAL_NAME, 
+	REPLACE(NATIONAL_NAME, '한국', '대한민국')
+FROM "NATIONAL";  -- "테이블명" == 이름이 "테이블명"과 같은 테이블
 
-------------------------------------------------------------------------
+--------------------------------------------------------
+--------------------------------------------------------
+--------------------------------------------------------
 
--- <숫자관련 함수>
+-- <숫자 관련 함수>
 
 -- MOD(숫자 | 컬럼명, 나눌 값) : 결과로 나머지 반환
-SELECT MOD(105, 100) FROM DUAL;
+SELECT MOD(105, 100) FROM DUAL; -- 5
 
--- ABS(숫자 | 컬럼명) : 절대값
-SELECT ABS(10), ABS(-10) FROM DUAL;
+-- ABS(숫자 | 컬럼명) : 절대 값
+SELECT ABS(10), ABS(-10) FROM DUAL; -- 10, 10
 
 -- CEIL(숫자 | 컬럼명)  : 올림 -> 정수 형태로 반환
 -- FLOOR(숫자 | 컬럼명) : 내림 -> 정수 형태로 반환
-SELECT CEIL(3.14), FLOOR(3.14) FROM DUAL;
-
+SELECT CEIL(1.1), FLOOR(1.9) FROM DUAL; -- 2, 1
 
 -- ROUND(숫자 | 컬럼명 [, 소수점 위치]) : 반올림
 -- 소수점 위치 지정 x : 소수점 첫째 자리에서 반올림 -> 정수 표현
@@ -141,23 +130,22 @@ SELECT CEIL(3.14), FLOOR(3.14) FROM DUAL;
 SELECT
 	123.456,
 	ROUND(123.456),  -- 123
-	ROUND(123.456, 0), -- 123 (0이 ROUND 기본값)
-	ROUND(123.456, 1), -- 123.5
-	ROUND(123.456, 2), -- 123.46
+	ROUND(123.456, 0),  -- 123 (0이 ROUND 기본값)
+	ROUND(123.456, 1),  -- 123.5
+	ROUND(123.456, 2),  -- 123.46
 	ROUND(123.456, -1), -- 120
-	ROUND(123.456, -2) -- 100
+	ROUND(123.456, -2)  -- 100
 FROM DUAL;
+
 
 
 -- TRUNC(숫자 | 컬럼명 [,소수점 위치]) : 버림 (잘라내기)
-SELECT 123.456,
-	TRUNC (123.456),    -- 123
-	TRUNC (123.456, 1), -- 123.4
-	TRUNC (123.456, 2), -- 123.45
-	TRUNC (123.456, 3), -- 123.456
-	TRUNC (123.456, -1),-- 120
-	TRUNC (123.456, -2) -- 100
+SELECT 
+	123.456,
+	TRUNC(123.456), -- 123
+	TRUNC(123.456, 1) -- 123.4  (둘째 자리부터 버림)
 FROM DUAL;
+
 
 -- 버림(TRUNC), 내림(FLOOR) 차이점
 SELECT 
@@ -165,8 +153,6 @@ SELECT
 	TRUNC(-123.5), -- -123
 	FLOOR(-123.5)  -- -124
 FROM DUAL;
-
-
 
 
 ---------------------------------------------------------
@@ -185,7 +171,6 @@ SELECT
 FROM DUAL;
 
 
-
 -- MONTHS_BETWEEN(날짜, 날짜) : 두 날짜 사이의 개월 수를 반환
 --> 반환 값 중 정수 부분은 차이나는 개월 수
 
@@ -198,54 +183,53 @@ FROM DUAL; -- 1(달)
 --    작성된 값의 형태가 요구하는 자료형의 형태를 띄고 있으면
 --    자동으로 형변환(PARSING)을 진행한다!!
 
-SELECT 
+SELECT
 	MONTHS_BETWEEN('2024-12-06', '2024-06-24'),
-	TO_DATE('2024-12-06')- TO_DATE('2024-06-24')
-FROM DUAL;
+	(TO_DATE('2024-12-06') - TO_DATE('2024-06-24')) / 30
+FROM DUAL; -- 5.42 == 5개월 13일
 
-/* MONTHS_BETWEEN이 지정된 두 날짜 사이의 차를 계산할때
- * 훨씬 좋다!!!(더 정확함)
- * -> 달마다 길이(30, 31, 28/29) 길이가 다 다르기 때문에
- * 	 	직접 계산시 오차가 생기지만, 
- * 		MONTHS_BETWEEN을 쓰면 이런부분까지 
- * 		모두 자동으로 적용되어 계산된다!
- * 
+/* MONTH_BETWEEN이 지정되 두 날짜 사이의 차를 계산할 때 
+ * 훨씬 좋다!!(더 정확함)
+ * -> 달 마다 길이(28, 29, 30, 31)가 다 다르기 때문에
+ *    직접 계산하면 오차가 있을 수 있는데
+ * 		MONTH_BETWEEN을 이용하면 이런 부분까지 모두
+ *    자동으로 적용되어 계산된다!!
  * */
-
 
 -- EMPLOYEE 테이블에서
 -- 모든 사원의 이름, 입사일, N년차 조회
 SELECT 
 	EMP_NAME, 
 	HIRE_DATE,
-	CEIL(MONTHS_BETWEEN(CURRENT_DATE, HIRE_DATE)/12)||'년차' AS "N년차"
+	CEIL( MONTHS_BETWEEN(CURRENT_DATE, HIRE_DATE) / 12 ) 
+	|| '년차' AS "N년차"
 FROM EMPLOYEE;
 
 ----------------------------------------
 
 -- ADD_MONTHS(날짜, 숫자) : 날짜를 숫자만큼의 개월 수를 더하여 반환
-SELECT
-	CURRENT_DATE,     -- 8/16
+SELECT 
+	CURRENT_DATE,      -- 8/16
 	CURRENT_DATE + 31, -- 9/16
-	CURRENT_DATE + 61, -- 10/16
+	CURRENT_DATE + 61,  -- 10/16
 	ADD_MONTHS(CURRENT_DATE, 1), -- 9/16
-	ADD_MONTHS(CURRENT_DATE, 2) -- 10/16
+	ADD_MONTHS(CURRENT_DATE, 2)  -- 10/16
 FROM DUAL;
 
 
 -- LAST_DAY(날짜) : 해당 월의 마지막 날짜를 반환
-
-SELECT
+SELECT 
 	LAST_DAY(CURRENT_DATE),
-	LAST_DAY(ADD_MONTHS(CURRENT_DATE, 1)),
-	LAST_DAY(ADD_MONTHS(CURRENT_DATE, 2))
+	LAST_DAY('2024-09-01')
 FROM DUAL;
 
--- 다음달 1일, 다음달 말일 조회하기
-SELECT
-	LAST_DAY(CURRENT_DATE) +1 "다음달 1일",
-	LAST_DAY(ADD_MONTHS(CURRENT_DATE, 1)) "다음달 말일",
-	LAST_DAY(ADD_MONTHS(CURRENT_DATE, 1))-LAST_DAY(CURRENT_DATE) "다음달은 몇 일?"
+-- 다음달 1일, 다음달 말일, 다음달 일 수 조회하기
+SELECT 
+	LAST_DAY(CURRENT_DATE) + 1 "다음달 1일",
+	LAST_DAY( ADD_MONTHS(CURRENT_DATE, 1) ) "다음달 말일",
+	
+	LAST_DAY( ADD_MONTHS(CURRENT_DATE, 1) )
+		- LAST_DAY(CURRENT_DATE)
 FROM DUAL;
 
 ------------------------------------------------
@@ -256,21 +240,18 @@ FROM DUAL;
 
 -- 지정된 날짜의 년 | 월 | 일을 추출하여 정수로 반환
 
-
 SELECT
-	EXTRACT(YEAR FROM CURRENT_DATE) 년,
-	EXTRACT(MONTH FROM CURRENT_DATE) 월,
-	EXTRACT(DAY FROM CURRENT_DATE) 일
+	EXTRACT(YEAR  FROM CURRENT_DATE) 년, 
+	EXTRACT(MONTH FROM CURRENT_DATE) 월, 
+	EXTRACT(DAY   FROM CURRENT_DATE) 일
 FROM DUAL;
-
-
 
 -- EMPLOYEE에서
 -- 2010년대에 입사한 사원의
 -- 사번, 이름, 입사일을 입사일 내림차순으로 조회
 SELECT EMP_ID, EMP_NAME, HIRE_DATE
 FROM EMPLOYEE
---WHERE HIRE_DATE BETWEEN )'2010-01-01' AND '2019-12-31'
+--WHERE HIRE_DATE BETWEEN '2010-01-01' AND '2019-12-31'
 WHERE EXTRACT(YEAR FROM HIRE_DATE) BETWEEN 2010 AND 2019
 ORDER BY HIRE_DATE DESC; -- 10행 조회
 
@@ -294,50 +275,41 @@ ORDER BY HIRE_DATE DESC; -- 10행 조회
  * 4) , : 숫자의 자릿수 구분
  * */
 
+
 -- 숫자 -> 문자열 변환 확인
-SELECT 1234, TO_CHAR(1234)
-FROM DUAL;
+SELECT 1234, TO_CHAR(1234) FROM DUAL;
 
 -- 지정된 칸 내부에서 문자열로 변환하기
-SELECT
-	1234, 
-	TO_CHAR(1234, '999999999')
-FROM DUAL;
+SELECT 1234, TO_CHAR(1234, '999999999')
+FROM DUAL; -- '    1234'
 
-SELECT
-	1234, 
-	TO_CHAR(1234, '000000000')
-FROM DUAL;
+SELECT 1234, TO_CHAR(1234, '000000000')
+FROM DUAL; -- '000001234'
 
 /* 숫자 -> 문자열 변환 시 발생할 수 있는 문제 상황 */
 --> 지정된 포맷의 칸 수가 변환하려는 숫자 자릿수 보다 적은 경우 
 --  모든 숫자가 #으로 변환되서 출력
-SELECT
-	1234, 
-	TO_CHAR(1234, '999')
+
+SELECT 1234, TO_CHAR(1234, '999') -- ####
 FROM DUAL;
 
 -- 자릿수 구분(,)
-
 SELECT 123456789, TO_CHAR(123456789, '999,999,999')
 FROM DUAL;
 
 -- 화폐 기호 + 자릿수 구분
-SELECT
-	123456789,
+SELECT 
+	123456789, 
 	TO_CHAR(123456789, 'L999,999,999'),
 	TO_CHAR(123456789, '$999,999,999')
 FROM DUAL;
 
-
-
-
-
+-- 모든 사원의 연봉을
+-- \OOO,OOO,OOO으로 조회
 SELECT 
-	EMP_NAME 사원명,
-	TO_CHAR(SALARY * 12,'L999,999,999') 연봉
+	EMP_NAME,
+	TO_CHAR(SALARY * 12, 'L999,999,999') 연봉
 FROM EMPLOYEE;
-
 
 ------------------------------------------------
 
@@ -363,63 +335,61 @@ FROM EMPLOYEE;
  * DY  : 요일(짧게) EX) 월, MON
  * */
 
+
 -- 오늘 날짜 YYYY/MM/DD 문자열로 변환
-SELECT
-	CURRENT_DATE,
-	TO_CHAR(CURRENT_DATE, 'YYYY/MM/DD')
+SELECT TO_CHAR(CURRENT_DATE, 'YYYY/MM/DD')
 FROM DUAL;
 
 -- '2024-08-16 금요일'
-SELECT
-	TO_CHAR(CURRENT_DATE, 'YYYY-MM-DD DAY')
+SELECT TO_CHAR(CURRENT_DATE, 'YYYY-MM-DD DAY')
 FROM DUAL;
 
 -- '2024.08.16 (금) 오후 14:10:12'
-SELECT
-	TO_CHAR(CURRENT_DATE,'YYYY.MM.DD (DY), PM HH24:MI:SS')
+SELECT TO_CHAR(CURRENT_DATE, 'YYYY.MM.DD (DY) PM HH24:MI:SS')          
 FROM DUAL;
 
 
---  /, (), :, - 는 일반적으로 날짜 표기시 사용하는 기호
+--  /, (), :, - 는 일반적으로 날짜 표기 시 사용하는 기호
 --> 패턴으로 인식되어 오류가 발생하지 않음!
-
 
 -- '24년 08월 16일 금요일 오후 2시 15분 30초'
 SELECT
- TO_CHAR(CURRENT_DATE,
- 				'YY"년" MM"월" DD"일" DAY PM HH"시" MI"분" SS"초"')
+	TO_CHAR(CURRENT_DATE,
+		'YY"년" MM"월" DD"일" DAY PM HH"시" MI"분" SS"초"')
 FROM DUAL;
---SQL Error [1821] [22008]: ORA-01821: 날짜 형식이 부적합합니다
---> 년, 월, 일, 시, 분, 초는 시간관련 기호로 인식되지 않아 오류 발생
+-- SQL Error [1821] [22008]: ORA-01821:
+--  날짜 형식이 부적합합니다
+--> 년,월,일,시,분,초는 시간 관련 기호로 인식되지 않아서 오류 발생!!
+
 --> [해결방법] : ""로 감싸서 패턴을 나타내는 기호가 아닌
---						 있는 그대로 출력하는 글자임을 명시
+--             있는 그대로 출력하는 글자임을 명시
 
 
--------------------------------------------------------------------------
+------------------------------------------------------
 
 
 -- TO_DATE(문자열 | 숫자 [, 포맷])
 
 -- 문자열 또는 숫자를 날짜 형식으로 변환
 
-
-SELECT
+SELECT 
 	'2024-08-16' 문자열,
 	TO_DATE('2024-08-16') 날짜
 FROM DUAL;
 -- TO_DATE에 매개 변수가 한 개만 작성될 수 있는 경우
   --> () 내부 문자열이 일반적인 날짜/시간 형식일 경우에만 가능
 
--- 일반적인 형식이 아닌 경우 포맷 지정 필수
+-- 일반적인 형식이 아닌 경우 포맷 지정 필수!!!
 SELECT TO_DATE('16082024', 'DDMMYYYY')
 FROM DUAL;
 
-SELECT
+
+SELECT 
 	TO_DATE('24년 08월 16일 금요일 오후 2시 15분 30초',
-					'YY"년" MM"월" DD"일" DAY PM HH"시" MI"분" SS"초"')
+		'YY"년" MM"월" DD"일" DAY PM HH"시" MI"분" SS"초"')
 FROM DUAL;
 
-	
+
 /*** 연도 패턴  Y, R 차이점 ***/
 
 -- 연도가 두 자리만 작성되어있는 경우
@@ -427,20 +397,21 @@ FROM DUAL;
 -- 50 이상 : Y : 현재 세기(2000년대) 추가
 --		      R : 이전 세기(1900년대) 추가
 
--- 50미만
-SELECT
-	TO_DATE('49-12-25', 'YY--MM-DD'),
-	TO_DATE('49-12-25', 'RR--MM-DD')
+-- 50 미만 확인
+SELECT 
+	TO_DATE('49-12-25', 'YY-MM-DD'), -- 2049
+	TO_DATE('49-12-25', 'RR-MM-DD')  -- 2049
 FROM DUAL;
 
--- 50 이상
-SELECT
-	TO_DATE('51-12-25', 'YY-MM-DD'),
-	TO_DATE('51-12-25', 'RR-MM-DD')
+-- 50 이상 확인
+SELECT 
+	TO_DATE('50-12-25', 'YY-MM-DD'), -- 2050
+	TO_DATE('50-12-25', 'RR-MM-DD')  -- 1950
 FROM DUAL;
-
 
 -------------------------------------------------
+
+
 -- TO_NUMBER(문자열 [,패턴]) : 문자열 -> 숫자 변환
 
 SELECT TO_NUMBER('$1,500', '$9,999')
@@ -460,10 +431,10 @@ FROM DUAL;
 -- 사번, 이름, 전화번호 조회
 -- 단, 전화번호가 없다면(NULL) '없음' 으로 조회
 SELECT 
-	EMP_ID,
-	EMP_NAME,
+	EMP_ID, 
+	EMP_NAME, 
 	NVL(PHONE, '없음') AS PHONE
-FROM
+FROM 
 	EMPLOYEE;
 
 
@@ -476,48 +447,54 @@ SELECT
 	EMP_NAME,
 	SALARY,
 	NVL(BONUS, 0) AS BONUS,
-  SALARY * NVL(BONUS, 0) AS 곱셈결과
+	SALARY * NVL(BONUS, 0) AS 곱셈결과
 FROM 
 	EMPLOYEE;
 
--- NVL2(컬럼명, NULL이 아닌 경우 변경할 값,
---      			NULL인 경우 변경할 값)
 
+-------------------------------------------------
+
+-- NVL2(컬럼명, NULL이 아닌 경우 변경할 값, 
+--             NULL인 경우 변경할 값)
 
 -- EMPLOYEE 테이블에서
 -- 사번, 이름, 전화번호 조회
 -- 전화 번호가 없으면 '없음'
 -- 전화 번호가 있으면 '010********' 형식으로 변경해서 조회
 
+-- RPAD(문자열, 길이, 바꿀문자)
+--  : 문자열 전체에서 오른쪽을 지정된 길이 만큼 다른 문자로 변경\
 SELECT
 	EMP_ID,
 	EMP_NAME,
-	NVL2(PHONE,
-			 RPAD(SUBSTR(PHONE,1,3), LENGTH(PHONE),'*'),
-			 '없음') AS 전화번호
+	NVL2(PHONE, 
+		   RPAD(SUBSTR(PHONE,1,3), LENGTH(PHONE), '*'), 
+		  '없음') AS "전화번호"
 FROM EMPLOYEE;
 
 
--------------------------------------------------------------------------
-
+------------------------------------------------------
 
 -- <선택 함수>
 -- 여러 가지 경우에 따라 알맞은 결과를 선택하는 함수
 -- (if, switch문과 비슷)
+
 
 -- DECODE(컬럼명 | 계산식, 조건1, 결과1, 조건2, 결과2, ... [,아무것도 만족 X])
 
 -- 컬럼명 | 계산식의 값이 일치하는 조건이 있으면
 -- 해당 조건 오른쪽에 작성된 결과가 반환된다.
 
+
 -- EMPLOYEE 테이블에서 
 -- 모든 사원의 이름, 주민등록번호, 성별 조회
-SELECT 
+SELECT
 	EMP_NAME,
-	EMP_NO,
-	DECODE(SUBSTR(EMP_NO,8,1),
-				'1', '남자', '2', '여자') AS 성별
-FROM EMPLOYEE;
+	EMP_NO,	
+	DECODE( SUBSTR(EMP_NO, 8, 1), 
+		'1', '남자', '2', '여자') AS "성별"
+FROM EMPLOYEE; 
+
 
 -- EMPLOYEE 테이블에서
 -- 직급코드가 'J7'인 직원은 급여 + 급여의 10%
@@ -525,18 +502,20 @@ FROM EMPLOYEE;
 -- 직급코드가 'J5'인 직원은 급여 + 급여의 20%
 -- 나머지 직급코드의 직원은 급여 + 급여의 5%  지급
 -- 사원명, 직급코드, 기존급여, 지급급여 조회
-SELECT
+
+SELECT 
 	EMP_NAME,
 	JOB_CODE,
 	SALARY "기존급여",
 	DECODE(JOB_CODE,
-				'J7', SALARY * 1.1,
-				'J6', SALARY * 1.15,
-				'J5', SALARY * 1.2,
-				SALARY * 1.05) "지급급여"
+		'J7', SALARY * 1.1, 
+		'J6', SALARY * 1.15,
+		'J5', SALARY * 1.2,
+		      SALARY * 1.05
+	) "지급급여"
 FROM EMPLOYEE;
 
----------------
+---------------------------------------------
 
 -- CASE 
 --	  WHEN 조건1 THEN 결과1
@@ -555,6 +534,7 @@ FROM EMPLOYEE;
 -- 급여 400만 이상 ~ 600만 미만 = '중급'
 -- 급여 400미만 = '초급'
 -- 단, 부서코드가 D6, D9인 사원만 직급코드 오름차순으로 조회
+
 SELECT
 	EMP_ID 사번,
 	EMP_NAME 이름,
@@ -562,12 +542,11 @@ SELECT
 	CASE
 		WHEN SALARY >= 6000000 THEN '고급'
 		WHEN SALARY >= 4000000 THEN '중급'
-		WHEN SALARY < 4000000 THEN '초급'
+		ELSE '초급'
 	END 구분
 FROM EMPLOYEE
 WHERE DEPT_CODE IN ('D6', 'D9')
 ORDER BY JOB_CODE ASC;
-
 
 
 -------------------------------------------------------------
@@ -580,46 +559,47 @@ ORDER BY JOB_CODE ASC;
 -- SUM(숫자가 기록된 컬럼명) : 그룹의 합계를 반환
 
 -- 모든 사원의 급여 합 조회
-SELECT
-	SUM (SALARY)
-FROM EMPLOYEE;
+SELECT SUM(SALARY) FROM EMPLOYEE;
+-- 94096240
+
 
 -- 부서 코드가 'D6'인 사원의 급여 합 조회
-SELECT
-	SUM (SALARY)
+SELECT SUM(SALARY) 
 FROM EMPLOYEE
 WHERE DEPT_CODE = 'D6';
+-- 13100000
 
 
 -----------------------------------------
 
 -- AVG(숫자만 기록된 컬럼) : 그룹의 평균
-SELECT
-	FLOOR(AVG (SALARY))
-FROM EMPLOYEE;
 
----------------------------
+-- 모든 사원의 급여 평균 조회
+SELECT FLOOR(AVG(SALARY)) FROM EMPLOYEE;
+-- 4091140
+
+--------------------------------------------
 -- MAX(컬럼명) : 최대값
 -- MIN(컬럼명) : 최소값
-SELECT
-	MAX(SALARY),
-	MIN(SALARY)
+
+-- 부서 코드가 'D6'인 사원들 중 
+-- 제일 많은 급여와, 제일 적은 급여 조회
+SELECT MAX(SALARY), MIN(SALARY)
 FROM EMPLOYEE
 WHERE DEPT_CODE = 'D6';
-
 
 -- 날짜 대소 비교 : 과거 < 미래
 -- 문자열 대소 비교 : 유니코드순서  (문자열 순서  A < Z)
 
 /* 그룹 함수는 여러 개를 동시에 조회할 수 있다 */
---> TIP! SELECT 결과 집합 RESULT SET이
---			 찌그러지지 않은 직각 사각형 형태일 때만 조회 가능?
-
+--> TIP. SELECT 결과 집합인 RESULT SET이
+--       찌그러지지 않은 직각 사각형 형태일 때만 조회 가능!!
 
 
 -- 모든 사원 중
 -- 가장 빠른 입사일, 최근 입사일
 -- 이름 오름차순에서 제일 먼저 작성되는 이름, 마지막에 작성되는 이름
+
 SELECT
 	MIN(HIRE_DATE) "가장 빠른 입사일",
 	MAX(HIRE_DATE) "최근 입사일",
@@ -641,43 +621,42 @@ FROM EMPLOYEE;
 	-- 지정된 컬럼에서 중복 값을 제외한 행의 개수를 반환
 	-- EX) A A B C D D D E : 5개 (중복은 한 번만 카운트)
 
--- EMPLOYEE 테이블의 모든 행의 개수 조회
-SELECT
-	COUNT(*)
-FROM EMPLOYEE;
 
--- PHONE 컬럼에 값이 작성된 행만 개수  반환
-SELECT
-	COUNT(*)
+-- EMPLOYEE 테이블의 모든 행의 개수 조회
+SELECT COUNT(*) FROM EMPLOYEE;
+
+-- EMPLOYEE 테이블에서 부서 코드가 'D5'인 사원의 수 
+SELECT COUNT(*) 
 FROM EMPLOYEE
-WHERE DEPT_CODE = 'D5';
+WHERE DEPT_CODE = 'D5'; -- 6
 
 -- 전화번호가 등록된 사원의 수
-SELECT
-	COUNT(*)
+SELECT COUNT(*)
 FROM EMPLOYEE
-WHERE PHONE IS NOT NULL;
+WHERE PHONE IS NOT NULL; -- 20
 
 -- 전체 조회 결과 행 중에서
 -- PHONE 컬럼에 값이 작성된 행만 개수 카운트해서 반환
+SELECT COUNT(PHONE)
+FROM EMPLOYEE; -- 20
+
+
+-- EMPLOYEE 테이블에 존재하는 부서코드의 수를 조회
+-- (EMPLOYEE 테이블에 부서코드가 몇 종류?)
+SELECT COUNT(DISTINCT DEPT_CODE)
+FROM EMPLOYEE; -- 6
+
+
+-- EMPLOYEE 테이블에 존재하는 여자, 남자 사원의 수
 SELECT
-	 COUNT(PHONE)
+	COUNT( DECODE(SUBSTR(EMP_NO, 8, 1), '2', '여자') ) "여자",
+	COUNT( DECODE(SUBSTR(EMP_NO, 8, 1), '1', '남자') ) "남자"
 FROM EMPLOYEE;
 
 
-SELECT
-	COUNT(DISTINCT DEPT_CODE)
-FROM EMPLOYEE;
 
 
-SELECT
-	COUNT(
-		DECODE(
-			SUBSTR(EMP_NO,8,1), '1', '남자')) 남자,
-	COUNT(
-		DECODE(
-			  SUBSTR(EMP_NO,8,1), '2', '여자')) 여자
-FROM EMPLOYEE
+
 
 
 
